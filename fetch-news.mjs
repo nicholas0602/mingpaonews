@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises';
 
-const RSS_URL = 'https://news.mingpao.com/rss/pns/s00001.xml';
+const RSS_URL = 'https://news.mingpao.com/php/rss.php';
 
 function clean(s) {
   return (s || '')
