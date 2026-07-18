@@ -5,26 +5,98 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RTHK Local News Card</title>
   <style>
-    :root { --bg:#fff; --fg:#000; --muted:#333; --line:#000; }
-    * { box-sizing:border-box; }
-    html, body { margin:0; padding:0; width:280px; height:150px; overflow:hidden; background:var(--bg); color:var(--fg); font-family: Arial, "Noto Sans TC", sans-serif; }
-    body { border:2px solid var(--line); border-radius:10px; padding:8px 10px; }
-    .wrap { height:100%; display:grid; grid-template-rows:auto 1fr auto; gap:4px; }
-    .title { font-size:15px; line-height:1.02; font-weight:700; border-bottom:2px solid var(--line); padding-bottom:2px; }
-    .news { display:flex; flex-direction:column; gap:3px; overflow:hidden; }
-    .headline { font-size:15px; line-height:1.15; font-weight:700; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
-    .item { font-size:15px; line-height:1.15; font-weight:700; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
-    .time { font-size:10px; color:var(--muted); border-top:1px solid var(--line); padding-top:2px; }
+    :root {
+      --bg: #ffffff;
+      --fg: #111111;
+      --muted: #666666;
+      --line: #d9d9d9;
+      --shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 280px;
+      height: 150px;
+      overflow: hidden;
+      background: #f3f3f3;
+      color: var(--fg);
+      font-family: Arial, "Noto Sans TC", sans-serif;
+    }
+
+    body {
+      padding: 8px;
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 10px 11px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 6px;
+    }
+
+    .header {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .news {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 0;
+    }
+
+    .item {
+      font-size: 13px;
+      line-height: 1.18;
+      font-weight: 700;
+      color: var(--fg);
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      padding-top: 3px;
+      font-size: 10px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .loading {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <div class="title">RTHK 本地新聞</div>
+  <main class="card">
+    <div class="header">RTHK 本地新聞</div>
+
     <div class="news" id="news">
-      <div class="headline">讀取中…</div>
-      <div class="item"></div>
+      <div class="loading">讀取中…</div>
     </div>
-    <div id="time" class="time">資料來源：news.json</div>
+
+    <div class="footer" id="time">資料來源：news.json</div>
   </main>
 
   <script>
@@ -33,15 +105,22 @@
         const res = await fetch('./news.json', { cache: 'no-store' });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
+
         document.getElementById('news').innerHTML = `
-          <div class="headline">${data.title1 || '未有新聞'}</div>
+          <div class="item">${data.title1 || '未有新聞'}</div>
           <div class="item">${data.title2 || ''}</div>
         `;
-        document.getElementById('time').textContent = data.updatedAt ? `最後更新：${data.updatedAt}` : '資料來源：news.json';
+
+        document.getElementById('time').textContent =
+          data.updatedAt ? `最後更新：${data.updatedAt}` : '資料來源：news.json';
       } catch (e) {
-        document.getElementById('news').innerHTML = `<div class="headline">新聞讀取失敗</div><div class="item">${e.message}</div>`;
+        document.getElementById('news').innerHTML = `
+          <div class="item">新聞讀取失敗</div>
+          <div class="item">${e.message}</div>
+        `;
       }
     }
+
     loadNews();
   </script>
 </body>
