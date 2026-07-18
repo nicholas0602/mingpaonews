@@ -23,10 +23,5 @@ jobs:
       - name: Fetch Ming Pao RSS
         run: node fetch-news.mjs
 
-      - name: Commit news.json
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add news.json
-          git commit -m "Update news.json" || exit 0
-          git push
+      - name: Show news.json
+        run: cat news.json
