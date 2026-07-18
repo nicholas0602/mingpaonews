@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises';
 
-const RSS_URL = 'https://news.mingpao.com/php/rss.php';
+const RSS_URL = 'https://rthk.hk/rthk/news/rss/c_expressnews_clocal.xml';
 
 function clean(s) {
   return (s || '')
@@ -20,13 +20,8 @@ function getTag(block, tag) {
 }
 
 console.log('Fetching RSS:', RSS_URL);
-
-const res = await fetch(RSS_URL, {
-  headers: { 'user-agent': 'Mozilla/5.0' }
-});
-
+const res = await fetch(RSS_URL, { headers: { 'user-agent': 'Mozilla/5.0' } });
 console.log('Status:', res.status, res.statusText);
-
 if (!res.ok) {
   const txt = await res.text().catch(() => '');
   console.log('Upstream body:', txt.slice(0, 500));
@@ -36,7 +31,6 @@ if (!res.ok) {
 const xml = await res.text();
 console.log('XML length:', xml.length);
 console.log('XML head:', xml.slice(0, 300));
-
 const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, 2).map(m => m[1]);
 console.log('Items found:', items.length);
 
@@ -45,8 +39,6 @@ const data = {
   title2: getTag(items[1] || '', 'title'),
   updatedAt: new Date().toLocaleString('zh-HK', { hour12: false })
 };
-
 console.log('Data:', data);
-
 await writeFile('news.json', JSON.stringify(data, null, 2), 'utf8');
 console.log('news.json written');
