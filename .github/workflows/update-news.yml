@@ -1,4 +1,4 @@
-name: Update Ming Pao News
+name: Update RTHK Local News
 
 on:
   schedule:
@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Fetch Ming Pao RSS
+      - name: Fetch RTHK RSS
         run: node fetch-news.mjs
 
       - name: Show news.json
