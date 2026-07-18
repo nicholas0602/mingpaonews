@@ -9,12 +9,11 @@
     * { box-sizing:border-box; }
     html, body { margin:0; padding:0; width:280px; height:150px; overflow:hidden; background:var(--bg); color:var(--fg); font-family: Arial, "Noto Sans TC", sans-serif; }
     body { border:2px solid var(--line); border-radius:10px; padding:8px 10px; }
-    .wrap { height:100%; display:grid; grid-template-rows:auto 1fr auto; gap:4px; }
+    .wrap { height:100%; display:grid; grid-template-rows:auto 1fr; gap:4px; }
     .title { font-size:15px; line-height:1.02; font-weight:700; border-bottom:2px solid var(--line); padding-bottom:2px; }
     .news { display:flex; flex-direction:column; gap:8px; overflow:hidden; }
     .headline { font-size:15px; line-height:1.15; font-weight:700; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
     .item { font-size:15px; line-height:1.15; font-weight:700; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
-    .time { font-size:10px; color:var(--muted); border-top:1px solid var(--line); padding-top:2px; }
   </style>
 </head>
 <body>
@@ -24,7 +23,6 @@
       <div class="headline">讀取中…</div>
       <div class="item"></div>
     </div>
-    
   </main>
 
   <script>
@@ -37,9 +35,11 @@
           <div class="headline">${data.title1 || '未有新聞'}</div>
           <div class="item">${data.title2 || ''}</div>
         `;
-        document.getElementById('time').textContent = data.updatedAt ? `最後更新：${data.updatedAt}` : '資料來源：news.json';
       } catch (e) {
-        document.getElementById('news').innerHTML = `<div class="headline">新聞讀取失敗</div><div class="item">${e.message}</div>`;
+        document.getElementById('news').innerHTML = `
+          <div class="headline">新聞讀取失敗</div>
+          <div class="item">${e.message}</div>
+        `;
       }
     }
     loadNews();
