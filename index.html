@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ming Pao News Card</title>
+  <style>
+    :root { --bg:#fff; --fg:#000; --muted:#333; --line:#000; }
+    * { box-sizing:border-box; }
+    html, body { margin:0; padding:0; width:280px; height:150px; overflow:hidden; background:var(--bg); color:var(--fg); font-family: Arial, "Noto Sans TC", sans-serif; }
+    body { border:2px solid var(--line); border-radius:10px; padding:8px 10px; }
+    .wrap { height:100%; display:grid; grid-template-rows:auto auto 1fr auto; gap:3px; }
+    .title { font-size:15px; line-height:1.02; font-weight:700; border-bottom:2px solid var(--line); padding-bottom:2px; }
+    .label { font-size:10px; color:var(--muted); }
+    .news { display:flex; flex-direction:column; gap:2px; overflow:hidden; }
+    .headline { font-size:18px; line-height:1.0; font-weight:700; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:1; overflow:hidden; }
+    .item { font-size:12px; line-height:1.05; color:var(--muted); display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:1; overflow:hidden; }
+    .time { font-size:10px; color:var(--muted); border-top:1px solid var(--line); padding-top:2px; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="title">明報 要聞</div>
+    <div class="label">RSS via GitHub Actions</div>
+    <div class="news" id="news">
+      <div class="headline">讀取中…</div>
+      <div class="item"></div>
+    </div>
+    <div id="time" class="time">資料來源：news.json</div>
+  </main>
+
+  <script>
+    async function loadNews() {
+      try {
+        const res = await fetch('./news.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        document.getElementById('news').innerHTML = `
+          <div class="headline">${data.title1 || '未有新聞'}</div>
+          <div class="item">${data.title2 || ''}</div>
+        `;
+        document.getElementById('time').textContent = data.updatedAt ? `最後更新：${data.updatedAt}` : '資料來源：news.json';
+      } catch (e) {
+        document.getElementById('news').innerHTML = `<div class="headline">新聞讀取失敗</div><div class="item">${e.message}</div>`;
+      }
+    }
+    loadNews();
+  </script>
+</body>
+</html>
